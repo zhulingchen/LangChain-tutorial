@@ -50,6 +50,7 @@ if __name__ == '__main__':
     )
 
     # Chat
+    # Because OpenAI GPT-4 model is involved, we need to set the environment variable OPENAI_API_KEY
     llm = ChatOpenAI(model_name="gpt-4")
     memory = ConversationSummaryMemory(llm=llm, memory_key="chat_history", return_messages=True)
     qa = ConversationalRetrievalChain.from_llm(llm, retriever=retriever, memory=memory)
