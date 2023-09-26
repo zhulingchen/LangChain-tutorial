@@ -55,7 +55,10 @@ if __name__ == '__main__':
     memory = ConversationSummaryMemory(llm=llm, memory_key="chat_history", return_messages=True)
     qa = ConversationalRetrievalChain.from_llm(llm, retriever=retriever, memory=memory)
 
-    question = "Could you make a high-level summary of this project with technical details?"
+    question = """
+    I would like to write a technical summary based on the codes of this project.
+    Can you give me one?
+    """
     result = qa(question)
     print(f"Question: {question}")
     print(f"Answer: {result['answer']}")
