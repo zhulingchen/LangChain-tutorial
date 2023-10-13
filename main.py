@@ -23,10 +23,32 @@ if __name__ == '__main__':
     except AttributeError:
         raise AttributeError(f'Language {args.lang} not found')
 
+    # Defined suffixes given the value of lang
+    suffixes = {
+        Language.CPP: ['.cpp', '.hpp', '.c', '.h'],
+        Language.GO: ['.go', '.g'],
+        Language.JAVA: ['.java', '.class'],
+        Language.JS: ['.js'],
+        Language.PHP: ['.php'],
+        Language.PROTO: ['.proto'],
+        Language.PYTHON: ['.py'],
+        Language.RST: ['.rst'],
+        Language.RUBY: ['.rb'],
+        Language.RUST: ['.rs'],
+        Language.SCALA: ['.scala'],
+        Language.SWIFT: ['.swift'],
+        Language.MARKDOWN: ['.md', '.markdown'],
+        Language.LATEX: ['.tex'],
+        Language.HTML: ['.html', '.htm'],
+        Language.SOL: ['.sol'],
+        Language.CSHARP: ['.cs']
+    }
+
     # Load codes
     loader = GenericLoader.from_filesystem(
         repo_path,
-        glob="**/*",
+        glob='**/[!.]*',
+        suffixes=suffixes[lang],
         parser=LanguageParser(language=lang)
     )
     documents = loader.load()
@@ -52,12 +74,14 @@ if __name__ == '__main__':
     # Because OpenAI GPT-4 model is involved, we need to set the environment variable OPENAI_API_KEY
     llm = ChatOpenAI(model_name="gpt-4")
     memory = ConversationSummaryMemory(llm=llm, memory_key="chat_history", return_messages=True)
-    qa = ConversationalRetrievalChain.from_llm(llm, retriever=retriever, memory=memory)
+    qa = ConversationalRetrievalChain.from_llm(llm, retriever=retriever, memory=memory, verbose=True)
 
-    question = """
-    I would like to write a technical summary based on the codes of this project.
-    Can you give me one?
+    question = f"""
+    You are an expert on the {lang} programming language.
+    Could you show me the detailed technical summary of what this project is about?
     """
     result = qa(question)
+
+    # Print the question and the answer
     print(f"Question: {question}")
     print(f"Answer: {result['answer']}")
