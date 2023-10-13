@@ -27,7 +27,6 @@ if __name__ == '__main__':
     loader = GenericLoader.from_filesystem(
         repo_path,
         glob="**/*",
-        suffixes=[".py"],
         parser=LanguageParser(language=lang)
     )
     documents = loader.load()
