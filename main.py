@@ -57,17 +57,18 @@ if __name__ == '__main__':
     # Split codes
     python_splitter = RecursiveCharacterTextSplitter.from_language(
         language=lang,
-        chunk_size=2000,
+        chunk_size=4096,
         chunk_overlap=100
     )
     texts = python_splitter.split_documents(documents)
     print(f'Splitted into {len(texts)} texts')
 
     # RetrievalQA
-    db = Chroma.from_documents(texts, OpenAIEmbeddings(disallowed_special=()))
+    embeddings = OpenAIEmbeddings(disallowed_special=())
+    db = Chroma.from_documents(texts, embedding=embeddings)
     retriever = db.as_retriever(
-        search_type="mmr",  # Also test "similarity"
-        search_kwargs={"k": 8},
+        search_type="similarity",  # "similarity" (default), "mmr", or "similarity_score_threshold"
+        search_kwargs={"k": 16},
     )
 
     # Chat
@@ -79,6 +80,7 @@ if __name__ == '__main__':
     question = f"""
     You are an expert on the {lang} programming language.
     Could you show me the detailed technical summary of what this project is about?
+    Also, how are the Kubernetes pods created? Are they created by calling the "kubectl" command in a python script? If yes, which python script?
     """
     result = qa(question)
 
