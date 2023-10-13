@@ -73,14 +73,13 @@ if __name__ == '__main__':
 
     # Chat
     # Because OpenAI GPT-4 model is involved, we need to set the environment variable OPENAI_API_KEY
-    llm = ChatOpenAI(model_name="gpt-4")
+    llm = ChatOpenAI(model_name="gpt-3.5-turbo-16k")
     memory = ConversationSummaryMemory(llm=llm, memory_key="chat_history", return_messages=True)
     qa = ConversationalRetrievalChain.from_llm(llm, retriever=retriever, memory=memory, verbose=True)
 
     question = f"""
     You are an expert on the {lang} programming language.
-    Could you show me the detailed technical summary of what this project is about?
-    Also, how are the Kubernetes pods created? Are they created by calling the "kubectl" command in a python script? If yes, which python script?
+    Could you show me the detailed technical summary about this project?
     """
     result = qa(question)
 
