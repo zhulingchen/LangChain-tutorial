@@ -1,12 +1,12 @@
 import os
 import argparse
 from langchain.text_splitter import Language
-from langchain.document_loaders.generic import GenericLoader
-from langchain.document_loaders.parsers import LanguageParser
+from langchain_community.document_loaders.generic import GenericLoader
+from langchain_community.document_loaders.parsers.language.language_parser import LanguageParser
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.vectorstores import Chroma
-from langchain.embeddings.openai import OpenAIEmbeddings
-from langchain.chat_models import ChatOpenAI
+from langchain_community.vectorstores import Chroma
+from langchain_openai import OpenAIEmbeddings
+from langchain_openai import ChatOpenAI
 from langchain.memory import ConversationSummaryMemory
 from langchain.chains import ConversationalRetrievalChain
 
@@ -73,13 +73,13 @@ if __name__ == '__main__':
 
     # Chat
     # Because OpenAI GPT-4 model is involved, we need to set the environment variable OPENAI_API_KEY
-    llm = ChatOpenAI(model_name="gpt-3.5-turbo-16k")
+    llm = ChatOpenAI(model_name="gpt-4o-2024-08-06")
     memory = ConversationSummaryMemory(llm=llm, memory_key="chat_history", return_messages=True)
     qa = ConversationalRetrievalChain.from_llm(llm, retriever=retriever, memory=memory, verbose=True)
 
     question = f"""
-    You are an expert on the {lang} programming language.
-    Could you show me the detailed technical summary about this project?
+    Based on the context of this project at {repo_path} developed with the {lang} programming language,
+    please show me the detailed technical summary about this project.
     """
     result = qa(question)
 
